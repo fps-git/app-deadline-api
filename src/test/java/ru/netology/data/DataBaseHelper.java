@@ -11,27 +11,27 @@ import java.sql.DriverManager;
 public class DataBaseHelper {
 
     @Value
-    public class UserData {
+    public static class UserData {
         String login;
         String password;
     }
 
     @Value
-    public class CardData {
+    public static class CardData {
         String id;
         String number;
         String balance;
     }
 
-    String loginDB = "app";
-    String passwordDB = "pass";
+    static String loginDB = "app";
+    static String passwordDB = "pass";
 
-    public UserData getValidUserData() {
+    public static UserData getValidUserData() {
         return new UserData("vasya", "qwerty123");
     }
 
     @SneakyThrows
-    public String getCardID(String cardNumber) {
+    public static String getCardID(String cardNumber) {
         var runner = new QueryRunner();
         String cardID;
 
@@ -47,7 +47,7 @@ public class DataBaseHelper {
     }
 
     @SneakyThrows
-    public String getValidVerificationCode(UserData user) {
+    public static String getValidVerificationCode(UserData user) {
         var runner = new QueryRunner();
         String verificationCode;
 
@@ -66,7 +66,7 @@ public class DataBaseHelper {
 
 
     @SneakyThrows
-    public void setCardBalance(String cardNumber, String balance) {
+    public static void setCardBalance(String cardNumber, String balance) {
         var runner = new QueryRunner();
 
         var setBalance = "UPDATE cards SET balance_in_kopecks= ? WHERE number = ?;";

@@ -1,4 +1,4 @@
-package ru.netology.test;
+package ru.netology.data;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -7,7 +7,6 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.json.JSONObject;
-import ru.netology.data.DataBaseHelper;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,11 +15,10 @@ import static io.restassured.RestAssured.given;
 
 public class APITestHelper {
 
-    DataBaseHelper data = new DataBaseHelper();
-    DataBaseHelper.UserData validUser = data.getValidUserData();
+    static DataBaseHelper.UserData validUser = DataBaseHelper.getValidUserData();
 
-    static String token;
-    private RequestSpecification requestSpec = new RequestSpecBuilder()
+    private static String token;
+    private static RequestSpecification requestSpec = new RequestSpecBuilder()
             .setBaseUri("http://localhost")
             .setBasePath("/api")
             .setPort(9999)
@@ -30,7 +28,7 @@ public class APITestHelper {
             .build();
 
 
-    public void login() {
+    public static void login() {
         JSONObject loginRequestBody = new JSONObject()
                 .put("login", validUser.getLogin())
                 .put("password", validUser.getPassword());
@@ -43,10 +41,10 @@ public class APITestHelper {
                 .statusCode(200);
     }
 
-    public void authentication() {
+    public static void authentication() {
         JSONObject authRequestBody = new JSONObject()
                 .put("login", validUser.getLogin())
-                .put("code", data.getValidVerificationCode(validUser));
+                .put("code", DataBaseHelper.getValidVerificationCode(validUser));
 
         token = given()
                 .spec(requestSpec)
@@ -58,7 +56,7 @@ public class APITestHelper {
                 .extract().path("token");
     }
 
-    public String getCardAmount(String cardNumber) {
+    public static String getCardAmount(String cardNumber) {
 
         String response = given()
                 .spec(requestSpec)
@@ -74,7 +72,7 @@ public class APITestHelper {
                 fromJson(response, new TypeToken<List<DataBaseHelper.CardData>>() {
                 }.getType());
 
-        var cardID = data.getCardID(cardNumber);
+        var cardID = DataBaseHelper.getCardID(cardNumber);
 
         String cardBalance = null;
         for (int i = 0; i < cardList.size(); i++) {
@@ -85,7 +83,7 @@ public class APITestHelper {
         return cardBalance;
     }
 
-    public void moneyTransfer(String cardFrom, String cardTo, int amount) {
+    public static void moneyTransfer(String cardFrom, String cardTo, int amount) {
 
         JSONObject moneyTransferBody = new JSONObject()
                 .put("from", cardFrom)
